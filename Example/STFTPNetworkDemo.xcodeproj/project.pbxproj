@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E68252CBF6420B4FD141082 /* libPods-STFTPNetworkDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CC6532A9A17CC2AB85E6D1C /* libPods-STFTPNetworkDemo.a */; };
 		DC46AA011EA07B3C00AF37E6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DC46AA001EA07B3C00AF37E6 /* main.m */; };
 		DC46AA041EA07B3C00AF37E6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DC46AA031EA07B3C00AF37E6 /* AppDelegate.m */; };
 		DC46AA0A1EA07B3C00AF37E6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC46AA081EA07B3C00AF37E6 /* Main.storyboard */; };
@@ -19,6 +20,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		38DEC22A6698335147C83B1D /* Pods-STFTPNetworkDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-STFTPNetworkDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-STFTPNetworkDemo/Pods-STFTPNetworkDemo.release.xcconfig"; sourceTree = "<group>"; };
+		4031D5665BD977DAE1FBACCD /* Pods-STFTPNetworkDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-STFTPNetworkDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-STFTPNetworkDemo/Pods-STFTPNetworkDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		6CC6532A9A17CC2AB85E6D1C /* libPods-STFTPNetworkDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-STFTPNetworkDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC46A9FC1EA07B3C00AF37E6 /* STFTPNetworkDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = STFTPNetworkDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC46AA001EA07B3C00AF37E6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DC46AA021EA07B3C00AF37E6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -42,17 +46,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E68252CBF6420B4FD141082 /* libPods-STFTPNetworkDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11368A71668586FE047CBA58 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6CC6532A9A17CC2AB85E6D1C /* libPods-STFTPNetworkDemo.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D0CB5DAEB8BC160FBC4B97F4 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4031D5665BD977DAE1FBACCD /* Pods-STFTPNetworkDemo.debug.xcconfig */,
+				38DEC22A6698335147C83B1D /* Pods-STFTPNetworkDemo.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		DC46A9F31EA07B3C00AF37E6 = {
 			isa = PBXGroup;
 			children = (
 				DC46A9FE1EA07B3C00AF37E6 /* STFTPNetworkDemo */,
 				DC46A9FD1EA07B3C00AF37E6 /* Products */,
+				D0CB5DAEB8BC160FBC4B97F4 /* Pods */,
+				11368A71668586FE047CBA58 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,9 +125,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DC46AA131EA07B3C00AF37E6 /* Build configuration list for PBXNativeTarget "STFTPNetworkDemo" */;
 			buildPhases = (
+				077FCB13D88453A1E3D9DDAA /* [CP] Check Pods Manifest.lock */,
 				DC46A9F81EA07B3C00AF37E6 /* Sources */,
 				DC46A9F91EA07B3C00AF37E6 /* Frameworks */,
 				DC46A9FA1EA07B3C00AF37E6 /* Resources */,
+				154F25BDCDE25FFE812FC7EC /* [CP] Embed Pods Frameworks */,
+				8186F9F5DAE91E0E866B8222 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -160,6 +187,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		077FCB13D88453A1E3D9DDAA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		154F25BDCDE25FFE812FC7EC /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-STFTPNetworkDemo/Pods-STFTPNetworkDemo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8186F9F5DAE91E0E866B8222 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-STFTPNetworkDemo/Pods-STFTPNetworkDemo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DC46A9F81EA07B3C00AF37E6 /* Sources */ = {
@@ -292,6 +367,7 @@
 		};
 		DC46AA141EA07B3C00AF37E6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4031D5665BD977DAE1FBACCD /* Pods-STFTPNetworkDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = PP25SV745R;
@@ -306,6 +382,7 @@
 		};
 		DC46AA151EA07B3C00AF37E6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 38DEC22A6698335147C83B1D /* Pods-STFTPNetworkDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = PP25SV745R;

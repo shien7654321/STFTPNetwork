@@ -58,3 +58,6 @@ fastlane/screenshots
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+Example/Pods
+Example/STFTPNetworkDemo.xcworkspace
+Podfile.lock
