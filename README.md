@@ -9,7 +9,7 @@ STFTPNetwork is an FTP network library for iOS.You can use it to connect to the 
 
 ## Requirements
 
-- iOS 8.0 or later
+- iOS 8.0 or later (For iOS 8.0 before, maybe it can work, but I have not tested.)
 - ARC
 
 ## Installation
