@@ -50,7 +50,7 @@ typedef NS_ENUM(NSInteger, STFTPErrorCode) {
 typedef void(^STFTPConnectHandler)(BOOL success);
 typedef void(^STFTPQuerySuccessHandler)(NSArray *results);
 typedef void(^STFTPFailHandler)(STFTPErrorCode errorCode);
-typedef void(^STFTPCreateSuccessHandler)();
+typedef void(^STFTPCreateSuccessHandler)(void);
 typedef STFTPCreateSuccessHandler STFTPRemoveSuccessHandler;
 typedef void(^STFTPProgressHandler)(unsigned long long bytesCompleted, unsigned long long bytesTotal);
 typedef void(^STFTPDownloadSuccessHandler)(NSData *data);
