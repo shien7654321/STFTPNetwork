@@ -13,7 +13,6 @@
 		DC46AA0A1EA07B3C00AF37E6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC46AA081EA07B3C00AF37E6 /* Main.storyboard */; };
 		DC46AA0C1EA07B3C00AF37E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC46AA0B1EA07B3C00AF37E6 /* Assets.xcassets */; };
 		DC46AA0F1EA07B3C00AF37E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC46AA0D1EA07B3C00AF37E6 /* LaunchScreen.storyboard */; };
-		DC46AA1C1EA07C3600AF37E6 /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = DC46AA1B1EA07C3600AF37E6 /* test.png */; };
 		DC46AA231EA07C4500AF37E6 /* ListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC46AA1E1EA07C4500AF37E6 /* ListCell.m */; };
 		DC46AA241EA07C4500AF37E6 /* ListController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC46AA201EA07C4500AF37E6 /* ListController.m */; };
 		DC46AA251EA07C4500AF37E6 /* MainController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC46AA221EA07C4500AF37E6 /* MainController.m */; };
@@ -31,8 +30,6 @@
 		DC46AA101EA07B3C00AF37E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC46AA181EA07B9200AF37E6 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = "zh-Hans"; path = "zh-Hans.lproj/Main.storyboard"; sourceTree = "<group>"; };
 		DC46AA191EA07B9600AF37E6 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.storyboard"; sourceTree = "<group>"; };
-		DC46AA1A1EA07C3600AF37E6 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
-		DC46AA1B1EA07C3600AF37E6 /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test.png; sourceTree = "<group>"; };
 		DC46AA1D1EA07C4500AF37E6 /* ListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListCell.h; sourceTree = "<group>"; };
 		DC46AA1E1EA07C4500AF37E6 /* ListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListCell.m; sourceTree = "<group>"; };
 		DC46AA1F1EA07C4500AF37E6 /* ListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListController.h; sourceTree = "<group>"; };
@@ -112,8 +109,6 @@
 				DC46AA101EA07B3C00AF37E6 /* Info.plist */,
 				DC46AA001EA07B3C00AF37E6 /* main.m */,
 				DC46AA0D1EA07B3C00AF37E6 /* LaunchScreen.storyboard */,
-				DC46AA1A1EA07C3600AF37E6 /* PrefixHeader.pch */,
-				DC46AA1B1EA07C3600AF37E6 /* test.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -129,7 +124,6 @@
 				DC46A9F81EA07B3C00AF37E6 /* Sources */,
 				DC46A9F91EA07B3C00AF37E6 /* Frameworks */,
 				DC46A9FA1EA07B3C00AF37E6 /* Resources */,
-				154F25BDCDE25FFE812FC7EC /* [CP] Embed Pods Frameworks */,
 				8186F9F5DAE91E0E866B8222 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -182,7 +176,6 @@
 				DC46AA0F1EA07B3C00AF37E6 /* LaunchScreen.storyboard in Resources */,
 				DC46AA0C1EA07B3C00AF37E6 /* Assets.xcassets in Resources */,
 				DC46AA0A1EA07B3C00AF37E6 /* Main.storyboard in Resources */,
-				DC46AA1C1EA07C3600AF37E6 /* test.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,28 +200,13 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		154F25BDCDE25FFE812FC7EC /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-STFTPNetworkDemo/Pods-STFTPNetworkDemo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		8186F9F5DAE91E0E866B8222 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-STFTPNetworkDemo/Pods-STFTPNetworkDemo-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-STFTPNetworkDemo/Pods-STFTPNetworkDemo-resources.sh",
 				"${PODS_ROOT}/IQKeyboardManager/IQKeyboardManager/Resources/IQKeyboardManager.bundle",
 				"${PODS_ROOT}/SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle",
 			);
@@ -239,7 +217,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-STFTPNetworkDemo/Pods-STFTPNetworkDemo-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-STFTPNetworkDemo/Pods-STFTPNetworkDemo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -391,7 +369,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = A59B2Z45EY;
-				GCC_PREFIX_HEADER = STFTPNetworkDemo/PrefixHeader.pch;
+				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = STFTPNetworkDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -406,7 +384,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = A59B2Z45EY;
-				GCC_PREFIX_HEADER = STFTPNetworkDemo/PrefixHeader.pch;
+				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = STFTPNetworkDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

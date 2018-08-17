@@ -36,6 +36,10 @@
     });
 }
 
+- (NSString *)currentPath {
+    return [_urlString hasSuffix:@"/"] ? _urlString : [NSString stringWithFormat:@"%@/", _urlString];
+}
+
 #pragma mark - Event
 
 - (IBAction)refresh:(UIRefreshControl *)sender {
@@ -51,7 +55,7 @@
             [sender endRefreshing];
         }
     } failHandler:^(STFTPErrorCode errorCode) {
-        DLog(@"查询文件失败：%ld", errorCode);
+        SFLog(@"查询文件失败：%ld", errorCode);
         loadFinish = YES;
         [_list removeAllObjects];
         [weakSelf.tableView reloadData];
@@ -67,6 +71,21 @@
 }
 
 - (IBAction)btnAddClicked:(UIBarButtonItem *)sender {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"请选择" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *createFolderAction = [UIAlertAction actionWithTitle:@"新建文件夹" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self createFolder];
+    }];
+    UIAlertAction *uploadFileAction = [UIAlertAction actionWithTitle:@"上传文件" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self uploadFile];
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:createFolderAction];
+    [alertController addAction:uploadFileAction];
+    [alertController addAction:cancelAction];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)createFolder {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"新建文件夹" message:nil preferredStyle:UIAlertControllerStyleAlert];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = @"请输入文件夹名称";
@@ -76,11 +95,11 @@
     UIAlertAction *createAction = [UIAlertAction actionWithTitle:@"新建" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         NSString *folderName = [alertController.textFields firstObject].text;
         if (folderName.length > 0) {
-            NSString *folderPath = [NSString stringWithFormat:@"%@%@", _urlString, folderName];
+            NSString *folderPath = [NSString stringWithFormat:@"%@%@", [self currentPath], folderName];
             [STFTPNetwork create:folderPath successHandler:^{
                 [weakSelf refresh:nil];
             } failHandler:^(STFTPErrorCode errorCode) {
-                DLog(@"新建文件夹失败：%ld", errorCode);
+                SFLog(@"新建文件夹失败：%ld", errorCode);
             }];
         }
     }];
@@ -91,21 +110,42 @@
 }
 
 - (void)uploadFile {
+    
+    NSDate *testDate = [NSDate date];
+    NSString *testString = [NSString stringWithFormat:@"%f", [testDate timeIntervalSince1970]];
+    NSData *testData = [testString dataUsingEncoding:NSUTF8StringEncoding];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyyMMddHHmmss";
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"png"];
-    NSString *urlString = [NSString stringWithFormat:@"%@test_%@.png", _urlString, [dateFormatter stringFromDate:[NSDate date]]];
+    NSString *testFilename = [NSString stringWithFormat:@"test_%@", [dateFormatter stringFromDate:testDate]];
+    NSString *testPath = [NSTemporaryDirectory() stringByAppendingPathComponent:testFilename];
+    BOOL testWriteFlag = [testData writeToFile:testPath atomically:YES];
+    if (!testWriteFlag) {
+        SFLog(@"测试上传文件写入硬盘失败");
+        return;
+    }
+    void (^removeTestFile)(NSString *path) = ^ (NSString *path) {
+        NSError *error = nil;
+        [[NSFileManager defaultManager] removeItemAtPath:testPath error:&error];
+        if (error) {
+            SFLog(@"删除测试文件失败");
+        }
+    };
+    
+    NSString *urlString = [NSString stringWithFormat:@"%@%@", [self currentPath], testFilename];
     [SVProgressHUD showProgress:0 status:@"正在上传..."];
-    [STFTPNetwork upload:path urlString:urlString progressHandler:^(unsigned long long bytesCompleted, unsigned long long bytesTotal) {
+    [STFTPNetwork upload:testPath urlString:urlString progressHandler:^(unsigned long long bytesCompleted, unsigned long long bytesTotal) {
         float progress = bytesTotal > 0 ? bytesCompleted * 1.0 / bytesTotal : 0;
         [SVProgressHUD showProgress:progress status:@"正在上传..."];
     } successHandler:^{
         [SVProgressHUD showSuccessWithStatus:@"上传成功"];
         [self refresh:nil];
+        removeTestFile(testPath);
     } failHandler:^(STFTPErrorCode errorCode) {
         [SVProgressHUD showErrorWithStatus:@"上传失败"];
-        DLog(@"上传失败：%ld", errorCode);
+        SFLog(@"上传失败：%ld", errorCode);
+        removeTestFile(testPath);
     }];
+    
 }
 
 #pragma mark - UITableViewDelegate
@@ -117,22 +157,22 @@
     NSInteger type = [dictionary[(__bridge id)kCFFTPResourceType] integerValue];
     if (type == DT_DIR) {
         ListController *listController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:NSStringFromClass([ListController class])];
-        listController.urlString = [NSString stringWithFormat:@"%@%@/", _urlString, name];
+        listController.urlString = [NSString stringWithFormat:@"%@%@/", [self currentPath], name];
         [self.navigationController pushViewController:listController animated:YES];
     } else {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:[NSString stringWithFormat:@"是否开始下载 %@ ?", name] preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *downloadAction = [UIAlertAction actionWithTitle:@"下载" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [SVProgressHUD showProgress:0 status:@"正在下载..."];
-            NSString *path = [NSString stringWithFormat:@"%@%@", _urlString, name];
+            NSString *path = [NSString stringWithFormat:@"%@%@", [self currentPath], name];
             [STFTPNetwork download:path progressHandler:^(unsigned long long bytesCompleted, unsigned long long bytesTotal) {
                 float progress = bytesTotal > 0 ? bytesCompleted * 1.0 / bytesTotal : 0;
                 [SVProgressHUD showProgress:progress status:@"正在下载..."];
             } successHandler:^(NSData *data) {
                 [SVProgressHUD showSuccessWithStatus:@"下载成功"];
-                DLog(@"下载数据长度：%lu", data.length);
+                SFLog(@"下载数据长度：%lu", data.length);
             } failHandler:^(STFTPErrorCode errorCode) {
                 [SVProgressHUD showErrorWithStatus:@"下载失败"];
-                DLog(@"下载失败：%ld", errorCode);
+                SFLog(@"下载失败：%ld", errorCode);
             }];
         }];
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
@@ -148,7 +188,7 @@
     __weak typeof(self) weakSelf = self;
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"警告" message:[NSString stringWithFormat:@"您是否真的要删除 %@ ?", name] preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *removeAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        NSString *path = [NSString stringWithFormat:@"%@%@", _urlString, name];
+        NSString *path = [NSString stringWithFormat:@"%@%@", [self currentPath], name];
         NSInteger type = [dictionary[(__bridge id)kCFFTPResourceType] integerValue];
         if (type == DT_DIR) {
             path = [NSString stringWithFormat:@"%@/", path];
@@ -158,7 +198,7 @@
             [weakSelf.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         } failHandler:^(STFTPErrorCode errorCode) {
             [SVProgressHUD showErrorWithStatus:@"删除文件(夹)失败"];
-            DLog(@"删除文件失败：%ld", errorCode);
+            SFLog(@"删除文件失败：%ld", errorCode);
         }];
     }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
