@@ -49,15 +49,15 @@
     __weak typeof(self) weakSelf = self;
     [STFTPNetwork query:_urlString successHandler:^(NSArray *results) {
         loadFinish = YES;
-        _list = [NSMutableArray arrayWithArray:results];
+        self->_list = [NSMutableArray arrayWithArray:results];
         [weakSelf.tableView reloadData];
         if (sender.isRefreshing && [[NSDate date] timeIntervalSinceDate:startRefreshTime] >= minDuration) {
             [sender endRefreshing];
         }
     } failHandler:^(STFTPErrorCode errorCode) {
-        SFLog(@"查询文件失败：%ld", errorCode);
+        SFLog(@"Query files failed: %ld", (long)errorCode);
         loadFinish = YES;
-        [_list removeAllObjects];
+        [self->_list removeAllObjects];
         [weakSelf.tableView reloadData];
         if (sender.isRefreshing && [[NSDate date] timeIntervalSinceDate:startRefreshTime] >= minDuration) {
             [sender endRefreshing];
@@ -71,14 +71,14 @@
 }
 
 - (IBAction)btnAddClicked:(UIBarButtonItem *)sender {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"请选择" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    UIAlertAction *createFolderAction = [UIAlertAction actionWithTitle:@"新建文件夹" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Please choose" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *createFolderAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Create a new folder", ) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self createFolder];
     }];
-    UIAlertAction *uploadFileAction = [UIAlertAction actionWithTitle:@"上传文件" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *uploadFileAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Upload file", ) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self uploadFile];
     }];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", ) style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:createFolderAction];
     [alertController addAction:uploadFileAction];
     [alertController addAction:cancelAction];
@@ -86,24 +86,24 @@
 }
 
 - (void)createFolder {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"新建文件夹" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"New folder" message:nil preferredStyle:UIAlertControllerStyleAlert];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = @"请输入文件夹名称";
+        textField.placeholder = NSLocalizedString(@"Please enter a folder name", );
         textField.clearButtonMode = UITextFieldViewModeWhileEditing;
     }];
     __weak typeof(self) weakSelf = self;
-    UIAlertAction *createAction = [UIAlertAction actionWithTitle:@"新建" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *createAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Create", ) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         NSString *folderName = [alertController.textFields firstObject].text;
         if (folderName.length > 0) {
             NSString *folderPath = [NSString stringWithFormat:@"%@%@", [self currentPath], folderName];
             [STFTPNetwork create:folderPath successHandler:^{
                 [weakSelf refresh:nil];
             } failHandler:^(STFTPErrorCode errorCode) {
-                SFLog(@"新建文件夹失败：%ld", errorCode);
+                SFLog(@"New folder failed: %ld", (long)errorCode);
             }];
         }
     }];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", ) style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:createAction];
     [alertController addAction:cancelAction];
     [self presentViewController:alertController animated:YES completion:nil];
@@ -120,29 +120,29 @@
     NSString *testPath = [NSTemporaryDirectory() stringByAppendingPathComponent:testFilename];
     BOOL testWriteFlag = [testData writeToFile:testPath atomically:YES];
     if (!testWriteFlag) {
-        SFLog(@"测试上传文件写入硬盘失败");
+        SFLog(@"Test upload file failed to write to hard disk");
         return;
     }
     void (^removeTestFile)(NSString *path) = ^ (NSString *path) {
         NSError *error = nil;
         [[NSFileManager defaultManager] removeItemAtPath:testPath error:&error];
         if (error) {
-            SFLog(@"删除测试文件失败");
+            SFLog(@"Failed to remove test file");
         }
     };
     
     NSString *urlString = [NSString stringWithFormat:@"%@%@", [self currentPath], testFilename];
-    [SVProgressHUD showProgress:0 status:@"正在上传..."];
+    [SVProgressHUD showProgress:0 status:@"Uploading..."];
     [STFTPNetwork upload:testPath urlString:urlString progressHandler:^(unsigned long long bytesCompleted, unsigned long long bytesTotal) {
         float progress = bytesTotal > 0 ? bytesCompleted * 1.0 / bytesTotal : 0;
-        [SVProgressHUD showProgress:progress status:@"正在上传..."];
+        [SVProgressHUD showProgress:progress status:@"Uploading..."];
     } successHandler:^{
-        [SVProgressHUD showSuccessWithStatus:@"上传成功"];
+        [SVProgressHUD showSuccessWithStatus:@"Upload success"];
         [self refresh:nil];
         removeTestFile(testPath);
     } failHandler:^(STFTPErrorCode errorCode) {
-        [SVProgressHUD showErrorWithStatus:@"上传失败"];
-        SFLog(@"上传失败：%ld", errorCode);
+        [SVProgressHUD showErrorWithStatus:@"Upload failed"];
+        SFLog(@"Upload failed: %ld", (long)errorCode);
         removeTestFile(testPath);
     }];
     
@@ -160,22 +160,22 @@
         listController.urlString = [NSString stringWithFormat:@"%@%@/", [self currentPath], name];
         [self.navigationController pushViewController:listController animated:YES];
     } else {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:[NSString stringWithFormat:@"是否开始下载 %@ ?", name] preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *downloadAction = [UIAlertAction actionWithTitle:@"下载" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [SVProgressHUD showProgress:0 status:@"正在下载..."];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Tips" message:[NSString stringWithFormat:@"Do you want to download %@ ?", name] preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *downloadAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Download", ) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [SVProgressHUD showProgress:0 status:@"Downloading..."];
             NSString *path = [NSString stringWithFormat:@"%@%@", [self currentPath], name];
             [STFTPNetwork download:path progressHandler:^(unsigned long long bytesCompleted, unsigned long long bytesTotal) {
                 float progress = bytesTotal > 0 ? bytesCompleted * 1.0 / bytesTotal : 0;
-                [SVProgressHUD showProgress:progress status:@"正在下载..."];
+                [SVProgressHUD showProgress:progress status:@"Downloading..."];
             } successHandler:^(NSData *data) {
-                [SVProgressHUD showSuccessWithStatus:@"下载成功"];
-                SFLog(@"下载数据长度：%lu", data.length);
+                [SVProgressHUD showSuccessWithStatus:@"Download success"];
+                SFLog(@"Downloaded data length: %lu", data.length);
             } failHandler:^(STFTPErrorCode errorCode) {
-                [SVProgressHUD showErrorWithStatus:@"下载失败"];
-                SFLog(@"下载失败：%ld", errorCode);
+                [SVProgressHUD showErrorWithStatus:@"Download failed"];
+                SFLog(@"Download failed: %ld", errorCode);
             }];
         }];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", ) style:UIAlertActionStyleCancel handler:nil];
         [alertController addAction:downloadAction];
         [alertController addAction:cancelAction];
         [self presentViewController:alertController animated:YES completion:nil];
@@ -186,22 +186,22 @@
     NSDictionary *dictionary = _list[indexPath.row];
     NSString *name = dictionary[(__bridge id)kCFFTPResourceName];
     __weak typeof(self) weakSelf = self;
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"警告" message:[NSString stringWithFormat:@"您是否真的要删除 %@ ?", name] preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *removeAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Warning" message:[NSString stringWithFormat:@"Do you really want to delete %@ ?", name] preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *removeAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Delete", ) style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         NSString *path = [NSString stringWithFormat:@"%@%@", [self currentPath], name];
         NSInteger type = [dictionary[(__bridge id)kCFFTPResourceType] integerValue];
         if (type == DT_DIR) {
             path = [NSString stringWithFormat:@"%@/", path];
         }
         [STFTPNetwork remove:path successHandler:^{
-            [_list removeObjectAtIndex:indexPath.row];
+            [self->_list removeObjectAtIndex:indexPath.row];
             [weakSelf.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         } failHandler:^(STFTPErrorCode errorCode) {
-            [SVProgressHUD showErrorWithStatus:@"删除文件(夹)失败"];
-            SFLog(@"删除文件失败：%ld", errorCode);
+            [SVProgressHUD showErrorWithStatus:@"Delete file (folder) failed"];
+            SFLog(@"Delete file failed: %ld", (long)errorCode);
         }];
     }];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", ) style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:removeAction];
     [alertController addAction:cancelAction];
     [self presentViewController:alertController animated:YES completion:nil];

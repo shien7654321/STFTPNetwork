@@ -25,7 +25,7 @@ void uploadClientCB(CFWriteStreamRef stream, CFStreamEventType type, void *clien
         case NSStreamEventHasSpaceAvailable: {
             UInt8 receiveBuffer[kBufferSize];
             CFIndex bytesRead = CFReadStreamRead(request->_readStream, receiveBuffer, kBufferSize);
-//            SFLog(@"上传目标文件读取：%ld", bytesRead);
+//            SFLog(@"Upload target file read: %ld", bytesRead);
             if (bytesRead > 0) {
                 NSInteger bytesOffset = 0;
                 do {
@@ -39,9 +39,9 @@ void uploadClientCB(CFWriteStreamRef stream, CFStreamEventType type, void *clien
                     } else if (bytesWritten == 0) {
                         break;
                     } else {
-                        SFLog(@"上传写入流写入错误");
+                        SFLog(@"Upload writeStream write error");
                         if (request->_failHandler) {
-                            request->_failHandler(STFTPErrorUploadWriteWriteError);
+                            request->_failHandler(STFTPErrorUploadWriteStreamWriteError);
                         }
                         return;
                     }
@@ -52,9 +52,9 @@ void uploadClientCB(CFWriteStreamRef stream, CFStreamEventType type, void *clien
                 }
                 [request stop];
             } else {
-                SFLog(@"上传写入流写入错误");
+                SFLog(@"Upload writeStream write error");
                 if (request->_failHandler) {
-                    request->_failHandler(STFTPErrorUploadWriteWriteError);
+                    request->_failHandler(STFTPErrorUploadWriteStreamWriteError);
                 }
             }
             break;
@@ -63,11 +63,11 @@ void uploadClientCB(CFWriteStreamRef stream, CFStreamEventType type, void *clien
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
             CFStreamError error = CFWriteStreamGetError(stream);
-            SFLog(@"上传写入流错误：%d", error.error);
+            SFLog(@"Upload writeStream error:%d", error.error);
 #pragma clang diagnostic pop
             [request stop];
             if (request->_failHandler) {
-                request->_failHandler(STFTPErrorUploadWriteError);
+                request->_failHandler(STFTPErrorUploadWriteStreamError);
             }
             break;
         }
@@ -110,19 +110,19 @@ void uploadClientCB(CFWriteStreamRef stream, CFStreamEventType type, void *clien
     NSError *error = nil;
     NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:_filePath error:&error];
     if (error) {
-        SFLog(@"获取上传目标文件属性失败：%@", error.localizedDescription);
+        SFLog(@"Get the upload target file attributes failed: %@", error.localizedDescription);
     } else {
         _bytesTotal = [fileAttributes fileSize];
     }
     if (!_bytesTotal) {
-        SFLog(@"上传目标文件大小未知");
+        SFLog(@"Upload target file size unknown");
     }
     
     NSURL *readURL = [NSURL fileURLWithPath:_filePath];
     _readStream = CFReadStreamCreateWithFile(kCFAllocatorDefault, (__bridge CFURLRef)readURL);
     
     if (!_readStream) {
-        SFLog(@"上传读取流初始化失败");
+        SFLog(@"Upload readStream initialization failed");
         [self stop];
         if (_failHandler) {
             _failHandler(STFTPErrorUploadReadStreamCreate);
@@ -131,10 +131,10 @@ void uploadClientCB(CFWriteStreamRef stream, CFStreamEventType type, void *clien
     }
     
     if (!CFReadStreamOpen(_readStream)) {
-        SFLog(@"上传读取流打开失败");
+        SFLog(@"Upload readStream open failed");
         [self stop];
         if (_failHandler) {
-            _failHandler(STFTPErrorUploadWriteOpen);
+            _failHandler(STFTPErrorUploadWriteStreamOpen);
         }
     }
     
@@ -144,7 +144,7 @@ void uploadClientCB(CFWriteStreamRef stream, CFStreamEventType type, void *clien
     CFRelease(writeURL);
     
     if (!_writeStream) {
-        SFLog(@"上传写入流初始化失败");
+        SFLog(@"Upload writeStream initialization failed");
         [self stop];
         if (_failHandler) {
             _failHandler(STFTPErrorUploadWriteStreamCreate);
@@ -174,18 +174,18 @@ void uploadClientCB(CFWriteStreamRef stream, CFStreamEventType type, void *clien
         _writeStreamScheduled = YES;
         CFWriteStreamScheduleWithRunLoop(_writeStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
     } else {
-        SFLog(@"设定上传写入回调失败");
+        SFLog(@"Set upload writeStream callback failed");
         [self stop];
         if (_failHandler) {
-            _failHandler(STFTPErrorUploadWriteSetClient);
+            _failHandler(STFTPErrorUploadWriteStreamSetClient);
         }
     }
     
     if (!CFWriteStreamOpen(_writeStream)) {
-        SFLog(@"上传写入流打开失败");
+        SFLog(@"Upload writeStream open failed");
         [self stop];
         if (_failHandler) {
-            _failHandler(STFTPErrorUploadWriteOpen);
+            _failHandler(STFTPErrorUploadWriteStreamOpen);
         }
     }
     

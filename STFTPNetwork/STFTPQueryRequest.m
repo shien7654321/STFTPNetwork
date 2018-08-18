@@ -43,7 +43,7 @@ void queryClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clientC
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
             CFStreamError error = CFReadStreamGetError(stream);
-            SFLog(@"读取流错误：%d", error.error);
+            SFLog(@"ReadStream error: %d", error.error);
 #pragma clang diagnostic pop
             [request stop];
             if (request->_failHandler) {
@@ -87,7 +87,7 @@ void queryClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clientC
     CFRelease(ftpURL);
     
     if (!_readStream) {
-        SFLog(@"读取流初始化失败");
+        SFLog(@"ReadStream initialization failed");
         [self stop];
         if (_failHandler) {
             _failHandler(STFTPErrorReadStreamCreate);
@@ -117,18 +117,18 @@ void queryClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clientC
         _readStreamScheduled = YES;
         CFReadStreamScheduleWithRunLoop(_readStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
     } else {
-        SFLog(@"设定读取回调失败");
+        SFLog(@"Set readStream callback failed");
         [self stop];
         if (_failHandler) {
-            _failHandler(STFTPErrorReadSetClient);
+            _failHandler(STFTPErrorReadStreamSetClient);
         }
     }
     
     if (!CFReadStreamOpen(_readStream)) {
-        SFLog(@"读取流打开失败");
+        SFLog(@"ReadStream open failed");
         [self stop];
         if (_failHandler) {
-            _failHandler(STFTPErrorReadOpen);
+            _failHandler(STFTPErrorReadStreamOpen);
         }
     }
 }
@@ -154,7 +154,7 @@ void queryClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clientC
             bytesConsumed = CFFTPCreateParsedResourceListing(NULL, &((const uint8_t *)_listData.bytes)[totalBytesConsumed], _listData.length - totalBytesConsumed, &parsedDictionary);
             if (bytesConsumed > 0) {
                 if (parsedDictionary != NULL) {
-                    //文件（夹）名称转码
+                    //File (folder) name transcoding
                     NSString *name = ((__bridge NSDictionary *)parsedDictionary)[(__bridge id)kCFFTPResourceName];
                     name = [self convertEncoding:name];
                     NSMutableDictionary *mutableParsedDictionary = [NSMutableDictionary dictionaryWithDictionary:(__bridge NSDictionary *)parsedDictionary];
@@ -181,7 +181,7 @@ void queryClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clientC
             } else if (bytesConsumed == 0) {
                 break;
             } else if (bytesConsumed == -1) {
-                SFLog(@"读取解析失败");
+                SFLog(@"Read parsing failed");
                 if (_failHandler) {
                     _failHandler(STFTPErrorReadParse);
                 }

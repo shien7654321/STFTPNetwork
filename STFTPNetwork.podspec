@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "STFTPNetwork"
-  s.version      = "0.0.1"
+  s.version      = "0.0.2"
   s.summary      = "An FTP network library for iOS."
   s.homepage     = "https://github.com/shien7654321/STFTPNetwork"
   s.author       = { "Suta" => "shien7654321@163.com" }

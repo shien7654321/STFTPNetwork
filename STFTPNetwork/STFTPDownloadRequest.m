@@ -28,19 +28,19 @@ void downloadClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clie
             cfSize = CFReadStreamCopyProperty(stream, kCFStreamPropertyFTPResourceSize);
             if (cfSize) {
                 if (CFNumberGetValue(cfSize, kCFNumberLongLongType, &size)) {
-//                    SFLog(@"下载目标文件大小：%llu", size);
+//                    SFLog(@"Download target file size: %llu", size);
                     request->_bytesTotal = size;
                 }
                 CFRelease(cfSize);
             } else {
-                SFLog(@"下载目标文件大小未知");
+                SFLog(@"Download target file size unknown");
             }
             break;
         }
         case kCFStreamEventHasBytesAvailable: {
             UInt8 receiveBuffer[kBufferSize];
             CFIndex bytesRead = CFReadStreamRead(stream, receiveBuffer, kBufferSize);
-//            SFLog(@"下载目标文件读取：%ld", bytesRead);
+//            SFLog(@"Download target file read: %ld", bytesRead);
             if (bytesRead > 0) {
                 NSInteger bytesOffset = 0;
                 do {
@@ -52,9 +52,9 @@ void downloadClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clie
                     } else if (bytesWritten == 0) {
                         break;
                     } else {
-                        SFLog(@"下载读取流写入错误");
+                        SFLog(@"Download readStream write error");
                         if (request->_failHandler) {
-                            request->_failHandler(STFTPErrorDownloadReadWriteError);
+                            request->_failHandler(STFTPErrorDownloadReadStreamWriteError);
                         }
                     }
                 } while (bytesRead - bytesOffset > 0);
@@ -65,11 +65,11 @@ void downloadClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clie
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
             CFStreamError error = CFReadStreamGetError(stream);
-            SFLog(@"下载读取流错误：%d", error.error);
+            SFLog(@"Download readStream error:%d", error.error);
 #pragma clang diagnostic pop
             [request stop];
             if (request->_failHandler) {
-                request->_failHandler(STFTPErrorDownloadReadError);
+                request->_failHandler(STFTPErrorDownloadReadStreamError);
             }
             break;
         }
@@ -106,12 +106,12 @@ void downloadClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clie
     NSString *cacheFolderPath = [STFTPNetwork cacheFolderPath];
     NSString *uuidString = [NSUUID UUID].UUIDString;
     _filePath = [cacheFolderPath stringByAppendingPathComponent:uuidString];
-//    SFLog(@"下载目标文件路径：%@", _filePath);
+//    SFLog(@"Download target file path: %@", _filePath);
     NSURL *writeURL = [NSURL fileURLWithPath:_filePath];
     _writeStream = CFWriteStreamCreateWithFile(kCFAllocatorDefault, (__bridge CFURLRef)writeURL);
     
     if (!_writeStream) {
-        SFLog(@"下载写入流初始化失败");
+        SFLog(@"Download writeStream initialization failed");
         [self stop];
         if (_failHandler) {
             _failHandler(STFTPErrorDownloadWriteStreamCreate);
@@ -120,10 +120,10 @@ void downloadClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clie
     }
     
     if (!CFWriteStreamOpen(_writeStream)) {
-        SFLog(@"下载写入流打开失败");
+        SFLog(@"Download writeStream open failed");
         [self stop];
         if (_failHandler) {
-            _failHandler(STFTPErrorWriteOpen);
+            _failHandler(STFTPErrorWriteStreamOpen);
         }
         return;
     }
@@ -134,7 +134,7 @@ void downloadClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clie
     CFRelease(readURL);
     
     if (!_readStream) {
-        SFLog(@"下载读取流初始化失败");
+        SFLog(@"Download readStream initialization failed");
         [self stop];
         if (_failHandler) {
             _failHandler(STFTPErrorDownloadReadStreamCreate);
@@ -151,9 +151,10 @@ void downloadClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clie
         CFReadStreamSetProperty(_readStream, kCFStreamPropertyFTPPassword, ftpPassword);
     }
     
-    CFReadStreamSetProperty(_readStream, kCFStreamPropertyFTPFetchResourceInfo, kCFBooleanTrue);//必须如此设置，CFFTPStream将发送STAT命令到FTP服务器获取文件信息，包括总规模。否则将无法在下载开始时获取下载目标文件大小
+    //It must be set this way. CFFTPStream will send the STAT command to the FTP server to get the file information, including the total size. Otherwise, you will not be able to get the download target file size at the beginning of download.
+    CFReadStreamSetProperty(_readStream, kCFStreamPropertyFTPFetchResourceInfo, kCFBooleanTrue);
     
-    //断点续传
+    //transmission resuming at break-points
 //    kCFStreamPropertyFTPFileTransferOffset
 //    kCFStreamPropertyAppendToFile : kCFBooleanTrue
     
@@ -170,18 +171,18 @@ void downloadClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clie
         _readStreamScheduled = YES;
         CFReadStreamScheduleWithRunLoop(_readStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
     } else {
-        SFLog(@"设定下载读取回调失败");
+        SFLog(@"Set download readStream callback failed");
         [self stop];
         if (_failHandler) {
-            _failHandler(STFTPErrorDownloadReadSetClient);
+            _failHandler(STFTPErrorDownloadReadSteamSetClient);
         }
     }
     
     if (!CFReadStreamOpen(_readStream)) {
-        SFLog(@"下载读取流打开失败");
+        SFLog(@"Download readStream open failed");
         [self stop];
         if (_failHandler) {
-            _failHandler(STFTPErrorDownloadReadOpen);
+            _failHandler(STFTPErrorDownloadReadStreamOpen);
         }
     }
     

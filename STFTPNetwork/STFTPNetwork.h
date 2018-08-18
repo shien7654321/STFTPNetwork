@@ -19,32 +19,32 @@
 UIKIT_EXTERN const CFIndex kBufferSize;
 
 typedef NS_ENUM(NSInteger, STFTPErrorCode) {
-    STFTPErrorURL = 1,//FTP服务器地址错误
-    STFTPErrorReadSetClient,//设定读取回调失败
-    STFTPErrorReadStreamCreate,//读取流创建失败
-    STFTPErrorReadOpen,//读取流打开失败
-    STFTPErrorReadByte,//读取字节失败
-    STFTPErrorReadError,//读取流错误
-    STFTPErrorReadParse,//读取解析失败
-    STFTPErrorWriteSetClient,//设定写入回调失败
-    STFTPErrorWriteStreamCreate,//写入流创建失败
-    STFTPErrorWriteOpen,//写入流打开失败
-    STFTPErrorWriteError,//写入流错误
-    STFTPRemoveError,//删除失败
-    STFTPErrorDownloadWriteStreamCreate,//下载写入流创建失败
-    STFTPErrorDownloadWriteOpen,//下载写入流打开失败
-    STFTPErrorDownloadReadStreamCreate,//下载读取流创建失败
-    STFTPErrorDownloadReadSetClient,//设定下载读取回调失败
-    STFTPErrorDownloadReadOpen,//下载读取流打开失败
-    STFTPErrorDownloadReadWriteError,//下载读取流写入错误
-    STFTPErrorDownloadReadError,//下载读取流错误
-    STFTPErrorUploadReadStreamCreate,//上传读取流创建失败
-    STFTPErrorUploadReadOpen,//上传读取流打开失败
-    STFTPErrorUploadWriteStreamCreate,//上传写入流创建失败
-    STFTPErrorUploadWriteSetClient,//设定上传写入回调失败
-    STFTPErrorUploadWriteOpen,//上传写入流打开失败
-    STFTPErrorUploadWriteWriteError,//上传写入流写入错误
-    STFTPErrorUploadWriteError//上传写入流错误
+    STFTPErrorURL = 1,//FTP server address error
+    STFTPErrorReadStreamSetClient,//set readStream callback failed
+    STFTPErrorReadStreamCreate,//readStream creation failed
+    STFTPErrorReadStreamOpen,//readStream open failed
+    STFTPErrorReadByte,//read byte failed
+    STFTPErrorReadError,//read stream error
+    STFTPErrorReadParse,//read parsing failed
+    STFTPErrorWriteStreamSetClient,//set writeStream callback failed
+    STFTPErrorWriteStreamCreate,//writeStream creation failed
+    STFTPErrorWriteStreamOpen,//writeStream open failed
+    STFTPErrorWriteError,//write stream error
+    STFTPRemoveError,//remove failed
+    STFTPErrorDownloadWriteStreamCreate,//download writeStream creation failed
+    STFTPErrorDownloadWriteStreamOpen,//download writeStream open failed
+    STFTPErrorDownloadReadStreamCreate,//download readStream creation failed
+    STFTPErrorDownloadReadSteamSetClient,//set download readStream callback failed
+    STFTPErrorDownloadReadStreamOpen,//download readStream open failed
+    STFTPErrorDownloadReadStreamWriteError,//download readStream write error
+    STFTPErrorDownloadReadStreamError,//download readStream error
+    STFTPErrorUploadReadStreamCreate,//upload readStream creation failed
+    STFTPErrorUploadReadStreamOpen,//upload readStream open failed
+    STFTPErrorUploadWriteStreamCreate,//upload writeStream creation failed
+    STFTPErrorUploadWriteStreamSetClient,//set upload writeStream callback failed
+    STFTPErrorUploadWriteStreamOpen,//upload writeStream open failed
+    STFTPErrorUploadWriteStreamWriteError,//upload writeStream write error
+    STFTPErrorUploadWriteStreamError//upload writeStream error
 };
 
 typedef void(^STFTPConnectHandler)(BOOL success);

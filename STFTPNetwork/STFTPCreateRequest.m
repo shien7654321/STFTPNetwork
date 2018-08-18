@@ -22,7 +22,7 @@ void createClientCB(CFWriteStreamRef stream, CFStreamEventType type, void *clien
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
         CFStreamError error = CFWriteStreamGetError(stream);
-        SFLog(@"写入流错误：%d", error.error);
+        SFLog(@"Write stream error: %d", error.error);
 #pragma clang diagnostic pop
         [request stop];
         if (request->_failHandler) {
@@ -62,7 +62,7 @@ void createClientCB(CFWriteStreamRef stream, CFStreamEventType type, void *clien
     CFRelease(ftpURL);
     
     if (!_writeStream) {
-        SFLog(@"写入流初始化失败");
+        SFLog(@"WriteStream initialization failed");
         [self stop];
         if (_failHandler) {
             _failHandler(STFTPErrorWriteStreamCreate);
@@ -91,18 +91,18 @@ void createClientCB(CFWriteStreamRef stream, CFStreamEventType type, void *clien
         _writeStreamScheduled = YES;
         CFWriteStreamScheduleWithRunLoop(_writeStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
     } else {
-        SFLog(@"设定写入回调失败");
+        SFLog(@"Setting writeStream callback failed");
         [self stop];
         if (_failHandler) {
-            _failHandler(STFTPErrorWriteSetClient);
+            _failHandler(STFTPErrorWriteStreamSetClient);
         }
     }
     
     if (!CFWriteStreamOpen(_writeStream)) {
-        SFLog(@"写入流打开失败");
+        SFLog(@"Write stream open failed");
         [self stop];
         if (_failHandler) {
-            _failHandler(STFTPErrorWriteOpen);
+            _failHandler(STFTPErrorWriteStreamOpen);
         }
     }
 }

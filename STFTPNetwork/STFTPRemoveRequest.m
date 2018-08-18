@@ -47,7 +47,7 @@
             _successHandler();
         }
     } else {
-        SFLog(@"删除文件(夹)失败：%d", errorCode);
+        SFLog(@"Remove file (folder) failed: %d", errorCode);
         if (_failHandler) {
             _failHandler(STFTPRemoveError);
         }

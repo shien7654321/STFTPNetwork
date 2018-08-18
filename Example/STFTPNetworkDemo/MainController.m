@@ -47,13 +47,13 @@
 
 - (IBAction)btnConnectClicked:(UIButton *)sender {
     [self.view endEditing:YES];
-    [SVProgressHUD showWithStatus:@"正在连接..."];
+    [SVProgressHUD showWithStatus:@"Connecting..."];
     [STFTPNetwork connect:_ftpURLString username:_ftpUsername password:_ftpPassword handler:^(BOOL success) {
         if (success) {
             [SVProgressHUD dismiss];
             [self performSegueWithIdentifier:@"MainToList" sender:nil];
         } else {
-            [SVProgressHUD showErrorWithStatus:@"连接FTP服务器失败"];
+            [SVProgressHUD showErrorWithStatus:@"Failed to connect to FTP server"];
         }
     }];
 }

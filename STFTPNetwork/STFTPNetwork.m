@@ -185,7 +185,7 @@ void connectClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clien
     if (![fileManager fileExistsAtPath:cacheFolderPath]) {
         NSError *error = nil;
         if (![fileManager createDirectoryAtPath:cacheFolderPath withIntermediateDirectories:YES attributes:nil error:&error]) {
-            SFLog(@"新建Cache文件夹失败：%@", error.localizedDescription);
+            SFLog(@"New cache folder failed: %@", error.localizedDescription);
         }
     }
     return cacheFolderPath;
@@ -197,7 +197,7 @@ void connectClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clien
     if ([fileManager fileExistsAtPath:cacheFolderPath]) {
         NSError *error = nil;
         if (![fileManager removeItemAtPath:cacheFolderPath error:&error]) {
-            SFLog(@"删除Cache文件夹失败：%@", error.localizedDescription);
+            SFLog(@"Remove cache folder failed: %@", error.localizedDescription);
         }
     }
 }
@@ -247,7 +247,7 @@ void connectClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clien
     _readStream = CFReadStreamCreateWithFTPURL(kCFAllocatorDefault, ftpURL);
     CFRelease(ftpURL);
     if (!_readStream) {
-        SFLog(@"读取流初始化失败");
+        SFLog(@"ReadStream initialization failed");
         [self stopConnect];
         [self reset];
         [self connectHandlerSuccess:NO];
@@ -275,14 +275,14 @@ void connectClientCB(CFReadStreamRef stream, CFStreamEventType type, void *clien
         _readStreamScheduled = YES;
         CFReadStreamScheduleWithRunLoop(_readStream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
     } else {
-        SFLog(@"设定读取回调失败");
+        SFLog(@"Set read stream callback failed");
         [self stopConnect];
         [self reset];
         [self connectHandlerSuccess:NO];
     }
     
     if (!CFReadStreamOpen(_readStream)) {
-        SFLog(@"读取流打开失败");
+        SFLog(@"ReadStream open failed");
         [self stopConnect];;
         [self reset];
         [self connectHandlerSuccess:NO];
