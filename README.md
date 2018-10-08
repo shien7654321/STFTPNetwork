@@ -5,7 +5,7 @@
 [![Platform](https://img.shields.io/cocoapods/p/STFTPNetwork.svg?style=flat)](http://cocoapods.org/pods/STFTPNetwork)
 
 ## A simple FTP network library for iOS.
-STFTPNetwork is an FTP network library for iOS.You can use it to connect to the FTP server, manage your files, including query, create, delete, download, upload and other operations.
+STFTPNetwork is an FTP network library for iOS. You can use it to connect to the FTP server, manage your files, including query, create, delete, download, upload and other operations.
 
 ![STFTPNetworkPreview01](https://github.com/shien7654321/STFTPNetwork/raw/master/Preview/STFTPNetworkPreview01.gif)
 
